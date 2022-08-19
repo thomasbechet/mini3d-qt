@@ -21,31 +21,31 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(mini3d-qt-widgets
+    qt_add_executable(mini3d-qt
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
-#    set_property(TARGET mini3d-qt-widgets APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+#    set_property(TARGET mini3d-qt APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
 # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 else()
     if(ANDROID)
-        add_library(mini3d-qt-widgets SHARED
+        add_library(mini3d-qt SHARED
             ${PROJECT_SOURCES}
         )
 # Define properties for Android with Qt 5 after find_package() calls as:
 #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
-        add_executable(mini3d-qt-widgets
+        add_executable(mini3d-qt
             ${PROJECT_SOURCES}
         )
     endif()
 endif()
 
-target_link_libraries(mini3d-qt-widgets PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(mini3d-qt PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
-set_target_properties(mini3d-qt-widgets PROPERTIES
+set_target_properties(mini3d-qt PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
@@ -53,10 +53,10 @@ set_target_properties(mini3d-qt-widgets PROPERTIES
     WIN32_EXECUTABLE TRUE
 )
 
-install(TARGETS mini3d-qt-widgets
+install(TARGETS mini3d-qt
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(mini3d-qt-widgets)
+    qt_finalize_executable(mini3d-qt)
 endif()
