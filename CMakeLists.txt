@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(mini3d-qt VERSION 0.1 LANGUAGES CXX)
+set(PROJ_NAME mini3d-qt)
+set(RUST_DIR mini3d)
+
+project(${PROJ_NAME} VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -25,25 +28,35 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET mini3d-qt APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 else()
     if(ANDROID)
-        add_library(mini3d-qt SHARED
+        add_library(${PROJ_NAME} SHARED
             ${PROJECT_SOURCES}
         )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
-        add_executable(mini3d-qt
+        add_executable(${PROJ_NAME}
             ${PROJECT_SOURCES}
         )
     endif()
 endif()
 
-target_link_libraries(mini3d-qt PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+include(ExternalProject)
+set_directory_properties(PROPERTIES EP_PREFIX ${PROJECT_BINARY_DIR}/RUST)
+ExternalProject_Add(
+    ${RUST_NAME}
+    GIT_REPOSITORY https://github.com/thomasbechet/mini3d.git
+    GIT_TAG "v1"
+    BUILD_COMMAND cargo build COMMAND cargo build --release
+    LOG_BUILD ON
+)
+
+add_dependencies(mini3d-qt mini3d)
+
+target_link_libraries(mini3d-qt PRIVATE
+    Qt${QT_VERSION_MAJOR}::Widgets
+    debug "${PROJECT_SOURCE_DIR}/mini3d/target/debug/libmini3d.a"
+    optimized "${PROJECT_SOURCE_DIR}/mini3d/target/release/libmini3d.a"
+)
 
 set_target_properties(mini3d-qt PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
