@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 
-set(PROJ_NAME mini3d-qt)
-set(RUST_DIR mini3d)
+set(MINI3D_NAME mini3d)
 
-project(${PROJ_NAME} VERSION 0.1 LANGUAGES CXX)
+project(mini3d-qt VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -30,35 +29,45 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     )
 else()
     if(ANDROID)
-        add_library(${PROJ_NAME} SHARED
+        add_library(${PROJECT_NAME} SHARED
             ${PROJECT_SOURCES}
         )
     else()
-        add_executable(${PROJ_NAME}
+        add_executable(${PROJECT_NAME}
             ${PROJECT_SOURCES}
         )
     endif()
 endif()
 
 include(ExternalProject)
-set_directory_properties(PROPERTIES EP_PREFIX ${PROJECT_BINARY_DIR}/RUST)
 ExternalProject_Add(
-    ${RUST_NAME}
-    GIT_REPOSITORY https://github.com/thomasbechet/mini3d.git
-    GIT_TAG "v1"
-    BUILD_COMMAND cargo build COMMAND cargo build --release
-    LOG_BUILD ON
+    ${MINI3D_NAME}
+    BUILD_BYPRODUCTS  "${PROJECT_SOURCE_DIR}/${MINI3D_NAME}/target/debug/${MINI3D_NAME}.dll.lib"
+    GIT_REPOSITORY    "https://github.com/thomasbechet/mini3d.git"
+    BUILD_COMMAND     cargo build
+    SOURCE_DIR        "${PROJECT_SOURCE_DIR}/${MINI3D_NAME}"
+    UPDATE_COMMAND    ""
+    CONFIGURE_COMMAND ""
+    INSTALL_COMMAND   ""
+    TEST_COMMAND      ""
+    INSTALL_COMMAND   ""
+    BUILD_IN_SOURCE   ON
+    LOG_BUILD         ON
 )
 
-add_dependencies(mini3d-qt mini3d)
+add_dependencies(${PROJECT_NAME} ${MINI3D_NAME})
 
-target_link_libraries(mini3d-qt PRIVATE
+target_include_directories(${PROJECT_NAME} PRIVATE
+    "${PROJECT_SOURCE_DIR}/${MINI3D_NAME}/mini3d_ffi/"
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
-    debug "${PROJECT_SOURCE_DIR}/mini3d/target/debug/libmini3d.a"
-    optimized "${PROJECT_SOURCE_DIR}/mini3d/target/release/libmini3d.a"
+    debug "${PROJECT_SOURCE_DIR}/${MINI3D_NAME}/target/debug/${MINI3D_NAME}.dll.lib"
+    optimized "${PROJECT_SOURCE_DIR}/${MINI3D_NAME}/target/release/${MINI3D_NAME}.dll.lib"
 )
 
-set_target_properties(mini3d-qt PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
@@ -66,10 +75,10 @@ set_target_properties(mini3d-qt PROPERTIES
     WIN32_EXECUTABLE TRUE
 )
 
-install(TARGETS mini3d-qt
+install(TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(mini3d-qt)
+    qt_finalize_executable(${PROJECT_NAME})
 endif()
