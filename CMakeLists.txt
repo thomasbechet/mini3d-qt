@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
 
-set(MINI3D_NAME mini3d)
-
 project(mini3d-qt VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -23,7 +21,7 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(mini3d-qt
+    qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
@@ -39,13 +37,24 @@ else()
     endif()
 endif()
 
+set(MINI3D_PROJECT mini3d-project)
+set(MINI3D_LIB mini3d)
+set(MINI3D_DIR mini3d)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(MINI3D_TARGET debug)
+    set(MINI3D_BUILD_COMMAND cargo build)
+else()
+    set(MINI3D_TARGET release)
+    set(MINI3D_BUILD_COMMAND cargo build --release)
+endif()
+set(MINI3D_LIB_PRODUCT "${PROJECT_SOURCE_DIR}/${MINI3D_DIR}/target/${MINI3D_TARGET}/${CMAKE_SHARED_LIBRARY_PREFIX}${MINI3D_LIB}${CMAKE_SHARED_LIBRARY_SUFFIX}")
 include(ExternalProject)
 ExternalProject_Add(
-    ${MINI3D_NAME}
-    BUILD_BYPRODUCTS  "${PROJECT_SOURCE_DIR}/${MINI3D_NAME}/target/debug/${MINI3D_NAME}.dll.lib"
+    ${MINI3D_PROJECT}
+    BUILD_BYPRODUCTS  ${MINI3D_LIB_PRODUCT}
     GIT_REPOSITORY    "https://github.com/thomasbechet/mini3d.git"
-    BUILD_COMMAND     cargo build
-    SOURCE_DIR        "${PROJECT_SOURCE_DIR}/${MINI3D_NAME}"
+    BUILD_COMMAND     ${MINI3D_BUILD_COMMAND}
+    SOURCE_DIR        "${PROJECT_SOURCE_DIR}/${MINI3D_DIR}"
     UPDATE_COMMAND    ""
     CONFIGURE_COMMAND ""
     INSTALL_COMMAND   ""
@@ -55,16 +64,20 @@ ExternalProject_Add(
     LOG_BUILD         ON
 )
 
-add_dependencies(${PROJECT_NAME} ${MINI3D_NAME})
+add_library(${MINI3D_LIB} SHARED IMPORTED)
+set_target_properties(${MINI3D_LIB} PROPERTIES
+    IMPORTED_LOCATION ${MINI3D_LIB_PRODUCT}
+)
+
+add_dependencies(${PROJECT_NAME} ${MINI3D_LIB})
 
 target_include_directories(${PROJECT_NAME} PRIVATE
-    "${PROJECT_SOURCE_DIR}/${MINI3D_NAME}/mini3d_ffi/"
+    "${PROJECT_SOURCE_DIR}/${MINI3D_DIR}/mini3d_ffi/"
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
-    debug "${PROJECT_SOURCE_DIR}/${MINI3D_NAME}/target/debug/${MINI3D_NAME}.dll.lib"
-    optimized "${PROJECT_SOURCE_DIR}/${MINI3D_NAME}/target/release/${MINI3D_NAME}.dll.lib"
+    ${MINI3D_LIB_PRODUCT}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
