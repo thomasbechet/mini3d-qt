@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.4)
 
 project(mini3d-qt VERSION 0.1 LANGUAGES CXX)
 
@@ -40,7 +40,7 @@ endif()
 set(MINI3D_PROJECT mini3d-project)
 set(MINI3D_LIB mini3d)
 set(MINI3D_DIR mini3d)
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+if (CMAKE_BUILD_TYPE MATCHES "Debug")
     set(MINI3D_TARGET debug)
     set(MINI3D_BUILD_COMMAND cargo build)
 else()
