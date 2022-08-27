@@ -83,6 +83,9 @@ target_link_directories(${PROJECT_NAME} PRIVATE
 target_include_directories(${PROJECT_NAME} PRIVATE
     "${PROJECT_SOURCE_DIR}/${MINI3D_DIR}/mini3d_ffi/"
 )
+if(MSVC)
+    set(MINI3D_LIB mini3d.dll.lib)
+endif(MSVC)
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     ${MINI3D_LIB}

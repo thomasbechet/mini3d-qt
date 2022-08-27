@@ -31,8 +31,8 @@ MainWindow::MainWindow(QWidget *parent)
     auto *surface_widget = new QWidget(this);
     surface_widget->resize(1600, 900);
     m_renderer = mini3d_renderer_new_wgpu_win32(
-                (void*)surface_widget->winId(),
-                (void*)GetModuleHandle(nullptr));
+                (void*)GetModuleHandle(nullptr),
+                (void*)surface_widget->winId());
 }
 MainWindow::~MainWindow()
 {
