@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.21)
 
 project(mini3d-qt VERSION 0.1 LANGUAGES CXX)
 
@@ -47,13 +47,14 @@ else()
     set(MINI3D_TARGET release)
     set(MINI3D_BUILD_COMMAND cargo build --release)
 endif()
-set(MINI3D_LIB_PRODUCT "${PROJECT_SOURCE_DIR}/${MINI3D_DIR}/target/${MINI3D_TARGET}/${CMAKE_SHARED_LIBRARY_PREFIX}${MINI3D_LIB}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+
 include(ExternalProject)
 ExternalProject_Add(
     ${MINI3D_PROJECT}
-    BUILD_BYPRODUCTS  ${MINI3D_LIB_PRODUCT}
+    BUILD_BYPRODUCTS  ${MINI3D_LIB}
     GIT_REPOSITORY    "https://github.com/thomasbechet/mini3d.git"
     BUILD_COMMAND     ${MINI3D_BUILD_COMMAND}
+    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/${MINI3D_DIR}/mini3d_ffi/"
     SOURCE_DIR        "${PROJECT_SOURCE_DIR}/${MINI3D_DIR}"
     UPDATE_COMMAND    ""
     CONFIGURE_COMMAND ""
@@ -63,21 +64,28 @@ ExternalProject_Add(
     BUILD_IN_SOURCE   ON
     LOG_BUILD         ON
 )
-
-add_library(${MINI3D_LIB} SHARED IMPORTED)
-set_target_properties(${MINI3D_LIB} PROPERTIES
-    IMPORTED_LOCATION ${MINI3D_LIB_PRODUCT}
+file(GLOB MINI3D_ARTIFACTS
+    "${PROJECT_SOURCE_DIR}/${MINI3D_DIR}/target/${MINI3D_TARGET}/*.dll"
+    "${PROJECT_SOURCE_DIR}/${MINI3D_DIR}/target/${MINI3D_TARGET}/*.lib"
+    "${PROJECT_SOURCE_DIR}/${MINI3D_DIR}/target/${MINI3D_TARGET}/*.a"
+    "${PROJECT_SOURCE_DIR}/${MINI3D_DIR}/target/${MINI3D_TARGET}/*.so"
+)
+add_custom_command(
+    TARGET ${PROJECT_NAME} PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy ${MINI3D_ARTIFACTS} ${PROJECT_BINARY_DIR}
 )
 
-add_dependencies(${PROJECT_NAME} ${MINI3D_LIB})
+add_dependencies(${PROJECT_NAME} ${MINI3D_PROJECT})
 
+target_link_directories(${PROJECT_NAME} PRIVATE
+    "${PROJECT_BINARY_DIR}"
+)
 target_include_directories(${PROJECT_NAME} PRIVATE
     "${PROJECT_SOURCE_DIR}/${MINI3D_DIR}/mini3d_ffi/"
 )
-
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
-    ${MINI3D_LIB_PRODUCT}
+    ${MINI3D_LIB}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
