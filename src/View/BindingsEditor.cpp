@@ -1,4 +1,4 @@
-#include "bindingseditor.h"
+#include "BindingsEditor.h"
 
 #include <QVBoxLayout>
 #include <QPushButton>

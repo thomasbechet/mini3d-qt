@@ -1,5 +1,4 @@
-#ifndef BINDINGSWINDOW_H
-#define BINDINGSWINDOW_H
+#pragma once
 
 #include <QDialog>
 
@@ -15,5 +14,3 @@ private slots:
     void cancelButtonClicked();
     void acceptButtonClicked();
 };
-
-#endif // BINDINGSWINDOW_H
