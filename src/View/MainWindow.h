@@ -10,12 +10,14 @@ class MainWindow : public QMainWindow, Ui::MainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
 
-    void closeEvent(QCloseEvent *event) override;
-
 public slots:
     void openBindingsEditor();
     void update();
+    void toggleFullscreen();
 
 private:
+    void closeEvent(QCloseEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+
     Ui::MainWindow *ui;
 };

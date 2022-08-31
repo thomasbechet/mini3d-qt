@@ -21,14 +21,11 @@ AppWidget::AppWidget(QWidget* parent)
 
 void AppWidget::progressAppAndRender()
 {
-    m_app->progress();
-    m_app->render(*m_renderer);
-    m_renderer->present();
-}
-void AppWidget::terminateAppAndRenderer()
-{
-    m_renderer.reset();
-    m_app.reset();
+    if (m_app && m_renderer) {
+        m_app->progress();
+        m_app->render(*m_renderer);
+        m_renderer->present();
+    }
 }
 
 void AppWidget::resizeEvent(QResizeEvent *event)
@@ -37,12 +34,13 @@ void AppWidget::resizeEvent(QResizeEvent *event)
         m_renderer->resize(event->size().width(), event->size().height());
     }
 }
+void AppWidget::closeEvent(QCloseEvent *event)
+{
+    m_renderer.reset();
+    m_app.reset();
+}
 bool AppWidget::eventFilter(QObject *obj, QEvent *e)
 {
-    if (e->type() == QEvent::Quit) {
-        qInfo() << "Hello";
-    }
-
     if (e->type() == QEvent::KeyPress || e->type() == QEvent::KeyRelease) {
         auto *keyEvent = static_cast<QKeyEvent*>(e);
         auto state = (e->type() == QEvent::KeyPress) ? MINI3D_BUTTON_STATE_PRESSED : MINI3D_BUTTON_STATE_RELEASED;

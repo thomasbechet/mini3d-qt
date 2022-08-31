@@ -14,10 +14,10 @@ public:
     explicit AppWidget(QWidget* parent = nullptr);
 
     void progressAppAndRender();
-    void terminateAppAndRenderer();
 
 private:
     void resizeEvent(QResizeEvent *event) override;
+    void closeEvent(QCloseEvent *event) override;
     bool eventFilter(QObject *obj, QEvent *e) override;
 
     std::shared_ptr<mini3d::App> m_app;

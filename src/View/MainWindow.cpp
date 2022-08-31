@@ -23,15 +23,6 @@ MainWindow::MainWindow(QWidget *parent)
     timer->setInterval(10);
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
     timer->start();
-
-//    showFullScreen();
-//    menuBar()->hide();
-//    ui->frame->showFullScreen();
-}
-
-void MainWindow::closeEvent(QCloseEvent *event)
-{
-    ui->frame->terminateAppAndRenderer();
 }
 
 void MainWindow::openBindingsEditor()
@@ -42,4 +33,25 @@ void MainWindow::openBindingsEditor()
 void MainWindow::update()
 {
     ui->frame->progressAppAndRender();
+}
+void MainWindow::toggleFullscreen()
+{
+    if (isFullScreen()) {
+        showNormal();
+        menuBar()->show();
+        ui->frame->showNormal();
+    } else {
+        showFullScreen();
+        menuBar()->hide();
+        ui->frame->showFullScreen();
+    }
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    ui->frame->close();
+}
+void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    toggleFullscreen();
 }
