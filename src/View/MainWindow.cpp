@@ -29,6 +29,11 @@ MainWindow::MainWindow(QWidget *parent)
 //    ui->frame->showFullScreen();
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    ui->frame->terminateAppAndRenderer();
+}
+
 void MainWindow::openBindingsEditor()
 {
     BindingsEditor dialog(this);

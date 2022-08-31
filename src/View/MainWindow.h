@@ -10,6 +10,8 @@ class MainWindow : public QMainWindow, Ui::MainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
 
+    void closeEvent(QCloseEvent *event) override;
+
 public slots:
     void openBindingsEditor();
     void update();

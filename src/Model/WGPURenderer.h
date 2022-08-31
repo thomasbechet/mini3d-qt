@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QObject>
+#include <QWidget>
 #include <mini3d.h>
 
 namespace mini3d
@@ -9,7 +9,7 @@ namespace mini3d
     {
         Q_OBJECT
     public:
-        WGPURenderer(void *hwnd);
+        WGPURenderer(WId wid);
         ~WGPURenderer();
 
         mini3d_renderer *handle();

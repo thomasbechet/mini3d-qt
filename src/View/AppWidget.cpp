@@ -16,7 +16,7 @@ AppWidget::AppWidget(QWidget* parent)
 
     // Create app and renderer
     m_app = std::make_unique<mini3d::App>();
-    m_renderer = std::make_unique<mini3d::WGPURenderer>((void*)winId());
+    m_renderer = std::make_unique<mini3d::WGPURenderer>(winId());
 }
 
 void AppWidget::progressAppAndRender()
@@ -24,6 +24,11 @@ void AppWidget::progressAppAndRender()
     m_app->progress();
     m_app->render(*m_renderer);
     m_renderer->present();
+}
+void AppWidget::terminateAppAndRenderer()
+{
+    m_renderer.reset();
+    m_app.reset();
 }
 
 void AppWidget::resizeEvent(QResizeEvent *event)
@@ -34,6 +39,10 @@ void AppWidget::resizeEvent(QResizeEvent *event)
 }
 bool AppWidget::eventFilter(QObject *obj, QEvent *e)
 {
+    if (e->type() == QEvent::Quit) {
+        qInfo() << "Hello";
+    }
+
     if (e->type() == QEvent::KeyPress || e->type() == QEvent::KeyRelease) {
         auto *keyEvent = static_cast<QKeyEvent*>(e);
         auto state = (e->type() == QEvent::KeyPress) ? MINI3D_BUTTON_STATE_PRESSED : MINI3D_BUTTON_STATE_RELEASED;

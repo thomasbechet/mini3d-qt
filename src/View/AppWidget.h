@@ -14,6 +14,7 @@ public:
     explicit AppWidget(QWidget* parent = nullptr);
 
     void progressAppAndRender();
+    void terminateAppAndRenderer();
 
 private:
     void resizeEvent(QResizeEvent *event) override;
