@@ -15,15 +15,17 @@ AppWidget::AppWidget(QWidget* parent)
     setCursor(Qt::BlankCursor);
 
     // Create app and renderer
-    m_app = std::make_unique<mini3d::App>();
+    m_app = std::make_unique<mini3d::Application>();
+    m_eventRecorder = std::make_unique<mini3d::EventRecorder>();
     m_renderer = std::make_unique<mini3d::WGPURenderer>(winId());
 }
 
 void AppWidget::progressAppAndRender()
 {
     if (m_app && m_renderer) {
-        m_app->progress();
-        m_app->render(*m_renderer);
+        m_app->progress(*m_eventRecorder);
+        m_eventRecorder->reset();
+        m_renderer->render(*m_app);
         m_renderer->present();
     }
 }
@@ -46,25 +48,25 @@ bool AppWidget::eventFilter(QObject *obj, QEvent *e)
         auto state = (e->type() == QEvent::KeyPress) ? MINI3D_BUTTON_STATE_PRESSED : MINI3D_BUTTON_STATE_RELEASED;
         switch (keyEvent->key()) {
         case Qt::Key::Key_Z:
-            m_app->pushInputButton("up", state);
+            m_eventRecorder->pushInputButton("up", state);
             break;
         case Qt::Key::Key_S:
-            m_app->pushInputButton("down", state);
+            m_eventRecorder->pushInputButton("down", state);
             break;
         case Qt::Key::Key_D:
-            m_app->pushInputButton("right", state);
+            m_eventRecorder->pushInputButton("right", state);
             break;
         case Qt::Key::Key_Q:
-            m_app->pushInputButton("left", state);
+            m_eventRecorder->pushInputButton("left", state);
             break;
         case Qt::Key::Key_M:
-            m_app->pushInputButton("switch_selection_mode", state);
+            m_eventRecorder->pushInputButton("switch_selection_mode", state);
         default:
             break;
         }
     } else if (e->type() == QEvent::MouseMove) {
         auto *mouseEvent = static_cast<QMouseEvent*>(e);
-        m_app->pushInputCursorPosition(mouseEvent->pos().x(), mouseEvent->pos().y(), width(), height());
+        m_eventRecorder->pushInputCursorPosition(mouseEvent->pos().x(), mouseEvent->pos().y(), width(), height());
     }
     return false;
 }

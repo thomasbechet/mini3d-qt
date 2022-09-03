@@ -24,9 +24,9 @@ WGPURenderer::~WGPURenderer()
     mini3d_renderer_delete(m_handle);
 }
 
-mini3d_renderer *WGPURenderer::handle()
+void WGPURenderer::render(const Application &app)
 {
-    return m_handle;
+    mini3d_renderer_render(m_handle, app.handle());
 }
 void WGPURenderer::resize(uint32_t width, uint32_t height)
 {
