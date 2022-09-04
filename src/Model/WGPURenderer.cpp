@@ -26,15 +26,11 @@ WGPURenderer::~WGPURenderer()
 
 void WGPURenderer::render(const Application &app)
 {
-    mini3d_renderer_render(m_handle, app.handle());
+    if (!mini3d_renderer_render(m_handle, app.handle())) {
+        mini3d_renderer_recreate(m_handle);
+    }
 }
 void WGPURenderer::resize(uint32_t width, uint32_t height)
 {
     mini3d_renderer_resize(m_handle, width, height);
-}
-void WGPURenderer::present()
-{
-    if (!mini3d_renderer_present(m_handle)) {
-        mini3d_renderer_recreate(m_handle);
-    }
 }

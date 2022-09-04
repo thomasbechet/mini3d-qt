@@ -26,7 +26,6 @@ void AppWidget::progressAppAndRender()
         m_app->progress(*m_eventRecorder);
         m_eventRecorder->reset();
         m_renderer->render(*m_app);
-        m_renderer->present();
     }
 }
 

@@ -16,7 +16,6 @@ namespace mini3d
 
         void render(const Application &app);
         void resize(uint32_t width, uint32_t height);
-        void present();
 
     private:
         mini3d_renderer *m_handle;
