@@ -1,11 +1,11 @@
-#include "BindingsEditor.h"
+#include "InputEditor.h"
 
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QTableWidget>
 #include <QLabel>
 
-BindingsEditor::BindingsEditor(QWidget *parent)
+InputEditor::InputEditor(QWidget *parent)
     : QDialog{parent}
 {
     // Configure layouts
@@ -40,11 +40,11 @@ BindingsEditor::BindingsEditor(QWidget *parent)
     setLayout(mainLayout);
 }
 
-void BindingsEditor::cancelButtonClicked()
+void InputEditor::cancelButtonClicked()
 {
     reject();
 }
-void BindingsEditor::acceptButtonClicked()
+void InputEditor::acceptButtonClicked()
 {
     accept();
 }

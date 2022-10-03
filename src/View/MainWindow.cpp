@@ -8,7 +8,7 @@
 
 #include <QTimer>
 
-#include "BindingsEditor.h"
+#include "InputEditor.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow{parent}, ui(new Ui::MainWindow)
@@ -20,19 +20,19 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Setup update loop
     auto *timer = new QTimer(this);
-    timer->setInterval(10);
+    timer->setInterval(0);
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
     timer->start();
 }
 
 void MainWindow::openBindingsEditor()
 {
-    BindingsEditor dialog(this);
+    InputEditor dialog(this);
     dialog.exec();
 }
 void MainWindow::update()
 {
-    ui->frame->progressAppAndRender();
+    ui->frame->update();
 }
 void MainWindow::toggleFullscreen()
 {

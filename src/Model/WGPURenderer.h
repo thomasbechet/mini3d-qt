@@ -3,10 +3,10 @@
 #include <QWidget>
 #include <mini3d.h>
 
-#include "Application.h"
-
 namespace mini3d
 {
+    class App;
+
     class WGPURenderer : public QObject
     {
         Q_OBJECT
@@ -14,7 +14,8 @@ namespace mini3d
         WGPURenderer(WId wid);
         ~WGPURenderer();
 
-        void render(const Application &app);
+        mini3d_renderer *handle() const;
+        void render(const App &app);
         void resize(uint32_t width, uint32_t height);
 
     private:

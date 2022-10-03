@@ -2,11 +2,11 @@
 
 #include <QDialog>
 
-class BindingsEditor : public QDialog
+class InputEditor : public QDialog
 {
     Q_OBJECT
 public:
-    explicit BindingsEditor(QWidget *parent = nullptr);
+    explicit InputEditor(QWidget *parent = nullptr);
 
 signals:
 

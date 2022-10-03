@@ -3,6 +3,8 @@
 #include <QtGlobal>
 #include <QtWidgets>
 
+#include "App.h"
+
 #if defined(Q_OS_WIN)
 #include <qt_windows.h>
 #endif
@@ -24,7 +26,11 @@ WGPURenderer::~WGPURenderer()
     mini3d_renderer_delete(m_handle);
 }
 
-void WGPURenderer::render(const Application &app)
+mini3d_renderer *WGPURenderer::handle() const
+{
+    return m_handle;
+}
+void WGPURenderer::render(const App &app)
 {
     if (!mini3d_renderer_render(m_handle, app.handle())) {
         mini3d_renderer_recreate(m_handle);
