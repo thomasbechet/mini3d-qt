@@ -10,9 +10,11 @@ class MainWindow : public QMainWindow, Ui::MainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
 
+    void update(float deltaTime);
+    bool running() const;
+
 public slots:
     void openBindingsEditor();
-    void update();
     void toggleFullscreen();
 
 private:
@@ -20,4 +22,5 @@ private:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 
     Ui::MainWindow *ui;
+    bool m_running = true;
 };

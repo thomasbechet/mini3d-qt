@@ -8,5 +8,21 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow mainWindow;
     mainWindow.show();
-    return a.exec();
+
+    QElapsedTimer timer;
+    while (mainWindow.running()) {
+
+        // Process Qt events
+        a.processEvents();
+
+        // Compute elapsed time
+        auto elapsed = timer.nsecsElapsed();
+        auto deltaTime = (float)(((double)elapsed) / 1000000.0);
+        timer.restart();
+
+        mainWindow.update(deltaTime);
+    }
+
+    a.exit();
+    return 0;
 }

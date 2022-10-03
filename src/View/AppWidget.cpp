@@ -46,14 +46,14 @@ AppWidget::AppWidget(QWidget* parent)
     mini3d_utils_import_model(&modelInfo, m_events->handle());
 }
 
-void AppWidget::update()
+void AppWidget::update(float deltaTime)
 {
     if (m_app && m_renderer) {
 
         // Compute elapsed time
-        auto elapsed = m_timer.nsecsElapsed();
-        auto deltaTime = (float)(((double)elapsed) / 1000000.0);
-        m_timer.restart();
+//        auto elapsed = m_timer.nsecsElapsed();
+//        auto deltaTime = (float)(((double)elapsed) / 1000000.0);
+//        m_timer.restart();
 
 //        qDebug() << deltaTime;
 

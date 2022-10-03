@@ -18,7 +18,7 @@ class AppWidget : public QFrame
 public:
     explicit AppWidget(QWidget* parent = nullptr);
 
-    void update();
+    void update(float deltaTime);
 
 private:
     void setFocus(bool toggle);

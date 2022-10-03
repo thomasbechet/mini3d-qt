@@ -17,22 +17,21 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Configure main window
     setWindowTitle("mini3d");
+}
 
-    // Setup update loop
-    auto *timer = new QTimer(this);
-    timer->setInterval(0);
-    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer->start();
+void MainWindow::update(float deltaTime)
+{
+    ui->frame->update(deltaTime);
+}
+bool MainWindow::running() const
+{
+    return m_running;
 }
 
 void MainWindow::openBindingsEditor()
 {
     InputEditor dialog(this);
     dialog.exec();
-}
-void MainWindow::update()
-{
-    ui->frame->update();
 }
 void MainWindow::toggleFullscreen()
 {
@@ -50,6 +49,7 @@ void MainWindow::toggleFullscreen()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     ui->frame->close();
+    m_running = false;
 }
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
 {
